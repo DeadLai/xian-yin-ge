@@ -815,9 +815,11 @@
      if (isRepeatMode) {
        icon.className = 'bi bi-repeat-1';
        icon.style.color = 'green';
+       icon.style.fontWeight = 'bold';
      } else {
        icon.className = 'fa-solid fa-repeat';
        icon.style.color = '';
+       icon.style.fontWeight = '';
      }
    };
    document.getElementById('seek-bar').oninput = (e) => {
