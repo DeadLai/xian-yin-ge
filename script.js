@@ -811,12 +811,13 @@
    };
    document.getElementById('repeat-btn').onclick = () => {
      isRepeatMode = !isRepeatMode;
+     const icon = document.querySelector('#repeat-btn i');
      if (isRepeatMode) {
-       document.getElementById('repeat-btn').style.background = 'linear-gradient(to left, green, black)';
-       document.getElementById('repeat-btn').style.color = 'white';
+       icon.className = 'bi bi-repeat-1';
+       icon.style.color = 'green';
      } else {
-       document.getElementById('repeat-btn').style.background = '';
-       document.getElementById('repeat-btn').style.color = '';
+       icon.className = 'fa-solid fa-repeat';
+       icon.style.color = '';
      }
    };
    document.getElementById('seek-bar').oninput = (e) => {
