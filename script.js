@@ -860,3 +860,30 @@
  };
 
  window.playSongFromManage = playSongFromManage;
+
+ async function downloadCurrentSong() {
+   if (currentIndex >= 0 && currentSongList.length > 0) {
+     const song = currentSongList[currentIndex];
+     document.getElementById('overlay').style.display = 'block';
+     try {
+       const response = await fetch(song.url);
+       const blob = await response.blob();
+       const url = URL.createObjectURL(blob);
+       const a = document.createElement('a');
+       a.href = url;
+       a.download = song.name;
+       document.body.appendChild(a);
+       a.click();
+       document.body.removeChild(a);
+       URL.revokeObjectURL(url);
+       showNotification('Download successful: ' + song.name.replace('.mp3', ''));
+     } catch (error) {
+       console.error('Download failed:', error);
+       showNotification('Download failed');
+     } finally {
+       document.getElementById('overlay').style.display = 'none';
+     }
+   }
+ }
+
+ window.downloadCurrentSong = downloadCurrentSong;

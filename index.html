@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Shalimar&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Comforter+Brush&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
 <body>
     <video id="background-video" src="background.mp4" muted loop autoplay style="display:block;"></video>
@@ -129,7 +131,8 @@
       <button id="prev-btn" style="margin: 5px;">◁◁</button>
       <button id="play-pause-btn" style="margin: 5px;">▶</button>
       <button id="next-btn" style="margin: 5px;">▷▷</button>
-      <button id="repeat-btn" style="margin: 5px; font-family: 'Comforter Brush', cursive; font-size: 24px;">Repeat this track</button>
+      <button id="repeat-btn" style="margin: 5px;"><i class="fa-solid fa-repeat"></i></button>
+      <button id="download-btn" onclick="downloadCurrentSong()" style="margin: 5px;"><i class="bi bi-download"></i></button>
       <br>
       <input type="range" id="seek-bar" min="0" max="100" value="0" style="width: 200px; margin: 5px;">
       <span id="current-time">0:00</span> / <span id="duration">0:00</span>
