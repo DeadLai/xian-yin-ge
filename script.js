@@ -265,21 +265,26 @@
      const rainAudio = document.getElementById('rain-audio');
      const rainVideo = document.getElementById('rain-video');
      const button = document.getElementById('rain-button');
+     const icon = button.querySelector('i');
      if (!isRainPlaying) {
          rainAudio.src = 'rain.mp3';
          rainAudio.play();
          rainVideo.play();
          rainVideo.style.display = 'block';
          isRainPlaying = true;
-         button.style.background = 'linear-gradient(to left, green, black)';
-         button.style.color = 'white';
+         if (icon) {
+             icon.style.color = 'green';
+             icon.style.fontWeight = 'bolder';
+         }
      } else {
          rainAudio.pause();
          rainVideo.pause();
          rainVideo.style.display = 'none';
          isRainPlaying = false;
-         button.style.background = '';
-         button.style.color = '';
+         if (icon) {
+             icon.style.color = '';
+             icon.style.fontWeight = '';
+         }
      }
  }
 
