@@ -145,12 +145,12 @@
      try {
          const albumDoc = await db.collection('albums').doc(albumId).get();
          const albumName = albumDoc.data().name;
-         currentAlbumBackground = albumDoc.data().background || 'background.mp4';
+         currentAlbumBackground = `vidBackground/${albumName}.mp4`;
          const bgVideo = document.getElementById('background-video');
          bgVideo.onerror = null; // Reset error handler
-         bgVideo.src = `vidBackground/${albumName}.mp4`;
+         bgVideo.src = currentAlbumBackground;
          bgVideo.onerror = () => {
-           bgVideo.src = currentAlbumBackground;
+           bgVideo.src = 'background.mp4';
            bgVideo.load();
            bgVideo.play();
          };
@@ -615,52 +615,33 @@
  async function setBackground(data) {
    const bgVideo = document.getElementById('background-video');
    if (bgVideo) {
-     const songName = data.name.replace('.mp3', '');
-     const vidBackgroundPath = `vidBackground/${songName}.mp4`;
-
      // Reset error handler
      bgVideo.onerror = null;
 
-     // Try local vidBackground for song first
-     bgVideo.src = vidBackgroundPath;
+     // Load album video first
+     /*bgVideo.src = currentAlbumBackground;
      bgVideo.onerror = () => {
-       // If song video fails, try Firebase link
+       // If album video fails, use default
+       bgVideo.src = 'background.mp4';
+       bgVideo.load();
+       bgVideo.play();
+     };
+     bgVideo.load();
+     bgVideo.play();*/
+
+     // Check if song video exists and switch if it does
+     const songName = data.name.replace('.mp3', '');
+     const songVidPath = `vidBackground/${songName}.mp4`;
+     bgVideo.src = songVidPath;
+     bgVideo.onerror = () => {
        if (data.backgroundVideo) {
          bgVideo.src = data.backgroundVideo;
-         bgVideo.onerror = () => {
-           // If Firebase fails, try album video in vidBackground
-           const albumName = data.albumName;
-           const albumVidPath = `vidBackground/${albumName}.mp4`;
-           bgVideo.src = albumVidPath;
-           bgVideo.onerror = () => {
-             // If album video fails, use album background from Firebase
-             bgVideo.src = currentAlbumBackground;
-             bgVideo.load();
-             bgVideo.play();
-           };
-           bgVideo.load();
-           bgVideo.play();
-         };
-         bgVideo.load();
-         bgVideo.play();
        } else {
-         // If no Firebase link, try album video in vidBackground
-         const albumName = data.albumName;
-         const albumVidPath = `vidBackground/${albumName}.mp4`;
-         bgVideo.src = albumVidPath;
-         bgVideo.onerror = () => {
-           // If album video fails, use album background from Firebase
-           bgVideo.src = currentAlbumBackground;
-           bgVideo.load();
-           bgVideo.play();
-         };
-         bgVideo.load();
-         bgVideo.play();
+         bgVideo.src = currentAlbumBackground;
        }
      };
-
      bgVideo.load();
-     bgVideo.play();
+      bgVideo.play();
    }
  }
 
