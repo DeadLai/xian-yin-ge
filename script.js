@@ -147,7 +147,13 @@
          const albumName = albumDoc.data().name;
          currentAlbumBackground = albumDoc.data().background || 'background.mp4';
          const bgVideo = document.getElementById('background-video');
-         bgVideo.src = currentAlbumBackground;
+         bgVideo.onerror = null; // Reset error handler
+         bgVideo.src = `vidBackground/${albumName}.mp4`;
+         bgVideo.onerror = () => {
+           bgVideo.src = currentAlbumBackground;
+           bgVideo.load();
+           bgVideo.play();
+         };
          bgVideo.load();
          bgVideo.play();
          const snapshot = await db.collection('music').where('album', '==', albumId).get();
@@ -174,10 +180,10 @@
              if (albumName === 'Nhạc Trung') {
                  p.style.fontFamily = "'Ma Shan Zheng', sans-serif";
              }
-             p.onclick = () => {
+             p.onclick = async () => {
                  const songName = data.name;
                  currentIndex = currentSongList.findIndex(song => song.name === songName);
-                 setBackground(data);
+                 await setBackground(data);
                  document.getElementById('audio').src = data.url;
                  document.getElementById('audio').load();
                  document.getElementById('audio').play().then(() => {
@@ -211,7 +217,7 @@
              currentIndex = 0;
              document.getElementById('controls').style.display = 'block';
              document.getElementById('song-name').style.display = 'block';
-             playCurrentSong();
+             await playCurrentSong();
          }
      } catch (error) {
          console.error('Load music for album failed:', error);
@@ -606,15 +612,55 @@
 
  window.selectColor = selectColor;
 
- function setBackground(data) {
+ async function setBackground(data) {
    const bgVideo = document.getElementById('background-video');
    if (bgVideo) {
-     const backgroundUrl = data.backgroundVideo || currentAlbumBackground;
-     if (bgVideo.src !== backgroundUrl) {
-       bgVideo.src = backgroundUrl;
-       bgVideo.load();
-       bgVideo.play();
-     }
+     const songName = data.name.replace('.mp3', '');
+     const vidBackgroundPath = `vidBackground/${songName}.mp4`;
+
+     // Reset error handler
+     bgVideo.onerror = null;
+
+     // Try local vidBackground for song first
+     bgVideo.src = vidBackgroundPath;
+     bgVideo.onerror = () => {
+       // If song video fails, try Firebase link
+       if (data.backgroundVideo) {
+         bgVideo.src = data.backgroundVideo;
+         bgVideo.onerror = () => {
+           // If Firebase fails, try album video in vidBackground
+           const albumName = data.albumName;
+           const albumVidPath = `vidBackground/${albumName}.mp4`;
+           bgVideo.src = albumVidPath;
+           bgVideo.onerror = () => {
+             // If album video fails, use album background from Firebase
+             bgVideo.src = currentAlbumBackground;
+             bgVideo.load();
+             bgVideo.play();
+           };
+           bgVideo.load();
+           bgVideo.play();
+         };
+         bgVideo.load();
+         bgVideo.play();
+       } else {
+         // If no Firebase link, try album video in vidBackground
+         const albumName = data.albumName;
+         const albumVidPath = `vidBackground/${albumName}.mp4`;
+         bgVideo.src = albumVidPath;
+         bgVideo.onerror = () => {
+           // If album video fails, use album background from Firebase
+           bgVideo.src = currentAlbumBackground;
+           bgVideo.load();
+           bgVideo.play();
+         };
+         bgVideo.load();
+         bgVideo.play();
+       }
+     };
+
+     bgVideo.load();
+     bgVideo.play();
    }
  }
 
@@ -665,9 +711,9 @@
    }
  }
 
- function playCurrentSong() {
+ async function playCurrentSong() {
    const data = currentSongList[currentIndex];
-   setBackground(data);
+   await setBackground(data);
    const audio = document.getElementById('audio');
    if (audio) {
      audio.src = data.url;
@@ -735,7 +781,7 @@
        data.backgroundVideo = albumDoc.data().background || 'background.mp4';
        await loadMusicForAlbum(data.album);
        currentIndex = currentSongList.findIndex(song => song.name === data.name);
-       setBackground(data);
+       await setBackground(data);
        document.getElementById('audio').src = data.url;
        document.getElementById('audio').load();
        document.getElementById('audio').play().then(() => {
@@ -788,21 +834,21 @@
    header.style.display = 'flex';
    const bottomLink = document.getElementById('bottom-link');
    bottomLink.style.display = 'block';
-   document.getElementById('prev-btn').onclick = () => {
+   document.getElementById('prev-btn').onclick = async () => {
      if (currentIndex > 0) {
        currentIndex--;
      } else {
        currentIndex = currentSongList.length - 1;
      }
-     playCurrentSong();
+     await playCurrentSong();
    };
-   document.getElementById('next-btn').onclick = () => {
+   document.getElementById('next-btn').onclick = async () => {
      if (currentIndex < currentSongList.length - 1) {
        currentIndex++;
      } else {
        currentIndex = 0;
      }
-     playCurrentSong();
+     await playCurrentSong();
    };
    document.getElementById('play-pause-btn').onclick = () => {
      const audio = document.getElementById('audio');
@@ -845,7 +891,7 @@
        seekBar.style.background = `linear-gradient(to right, rgba(255, 0, 0, 0.8) 0%, rgba(255, 0, 0, 0.8) ${percentage}%, rgba(255, 255, 255, 0.5) ${percentage}%, rgba(255, 255, 255, 0.5) 100%)`;
      }
    };
-   document.getElementById('audio').onended = () => {
+   document.getElementById('audio').onended = async () => {
      if (isRepeatMode) {
        const audio = document.getElementById('audio');
        audio.currentTime = 0;
@@ -856,7 +902,7 @@
        } else {
          currentIndex = 0;
        }
-       playCurrentSong();
+       await playCurrentSong();
      }
    };
    document.getElementById('audio').onpause = () => {
