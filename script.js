@@ -525,66 +525,8 @@
    }
  }
 
- function toggleBackgroundModal() {
-   const modal = document.getElementById('background-modal');
-   modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
-   if (modal.style.display === 'block') {
-     loadAlbumsForBackground();
-   }
- }
 
- async function loadAlbumsForBackground() {
-   try {
-     const snapshot = await db.collection('albums').get();
-     const select = document.getElementById('background-album-select');
-     select.innerHTML = '<option value="">Select album</option>';
-     const docs = [];
-     snapshot.forEach(doc => docs.push(doc));
-     docs.sort((a, b) => a.data().name.localeCompare(b.data().name));
-     docs.forEach(doc => {
-       const data = doc.data();
-       const option = document.createElement('option');
-       option.value = doc.id;
-       option.textContent = data.name;
-       select.appendChild(option);
-     });
-   } catch (error) {
-     console.error('Load albums for background failed:', error);
-   }
- }
 
- async function saveBackground() {
-   const albumId = document.getElementById('background-album-select').value;
-   const file = document.getElementById('background-file-input').files[0];
-   if (!albumId) {
-     alert('Please select an album');
-     return;
-   }
-   if (!file) {
-     alert('Please select a video file');
-     return;
-   }
-   document.getElementById('overlay').style.display = 'block';
-   const formData = new FormData();
-   formData.append('file', file);
-   formData.append('upload_preset', uploadPreset);
-   try {
-     const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
-       method: 'POST',
-       body: formData
-     });
-     const data = await response.json();
-     const url = data.secure_url;
-     await db.collection('albums').doc(albumId).update({ background: url });
-     showNotification('Background updated successfully');
-     toggleBackgroundModal();
-   } catch (error) {
-     console.error('Save background failed:', error);
-     alert('Save background failed');
-   } finally {
-     document.getElementById('overlay').style.display = 'none';
-   }
- }
 
  window.playAudio = playAudio;
  window.uploadFile = uploadFile;
@@ -599,9 +541,6 @@
  window.deleteSongBackground = deleteSongBackground;
  window.toggleAlbums = toggleAlbums;
  window.playRainLoop = playRainLoop;
- window.toggleBackgroundModal = toggleBackgroundModal;
- window.saveBackground = saveBackground;
- window.loadAlbumsForBackground = loadAlbumsForBackground;
 
  function selectColor(element) {
      const color = element.getAttribute('data-color');
