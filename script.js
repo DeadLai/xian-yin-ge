@@ -177,7 +177,7 @@
              p.style.fontFamily = "'Shalimar', cursive";
              p.style.fontSize = '24px';
              p.dataset.index = index;
-             if (albumName === 'Nhạc Trung') {
+             if (albumName === 'C-Pop') {
                  p.style.fontFamily = "'Ma Shan Zheng', sans-serif";
              }
              p.onclick = async () => {
@@ -195,7 +195,7 @@
                  document.getElementById('song-name').style.display = 'block';
                  document.getElementById('song-name').textContent = data.name.replace('.mp3', '');
                  document.title = data.name.replace('.mp3', '');
-                 if (data.name.includes('黄昏-周传雄') || data.albumName === 'Nhạc Trung') {
+                 if (data.name.includes('黄昏-周传雄') || data.albumName === 'C-Pop') {
                      document.getElementById('song-name').style.fontFamily = "'Ma Shan Zheng', sans-serif";
                  } else {
                      document.getElementById('song-name').style.fontFamily = "'Shalimar', cursive";
@@ -604,7 +604,7 @@
        songNameElement.style.display = 'block';
        songNameElement.textContent = data.name.replace('.mp3', '');
        document.title = data.name.replace('.mp3', '');
-       if (data.name.includes('黄昏-周传雄') || data.albumName === 'Nhạc Trung') {
+       if (data.name.includes('黄昏-周传雄') || data.albumName === 'C-Pop') {
          songNameElement.style.fontFamily = "'Ma Shan Zheng', sans-serif";
        } else {
          songNameElement.style.fontFamily = "'Shalimar', cursive";
@@ -677,7 +677,7 @@
        document.getElementById('song-name').style.display = 'block';
        document.getElementById('song-name').textContent = data.name.replace('.mp3', '');
        document.title = data.name.replace('.mp3', '');
-       if (data.name.includes('黄昏-周传雄') || data.albumName === 'Nhạc Trung') {
+       if (data.name.includes('黄昏-周传雄') || data.albumName === 'C-Pop') {
          document.getElementById('song-name').style.fontFamily = "'Ma Shan Zheng', sans-serif";
        } else {
          document.getElementById('song-name').style.fontFamily = "'Shalimar', cursive";
